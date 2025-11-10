@@ -11,8 +11,8 @@ Model name is converted to lowercase for the collection name:
 - BlogPost -> "blogs" collection
 """
 
-from pydantic import BaseModel, Field
-from typing import Optional
+from pydantic import BaseModel, Field, EmailStr
+from typing import Optional, Literal
 
 # Example schemas (replace with your own):
 
@@ -37,6 +37,31 @@ class Product(BaseModel):
     price: float = Field(..., ge=0, description="Price in dollars")
     category: str = Field(..., description="Product category")
     in_stock: bool = Field(True, description="Whether product is in stock")
+
+# Cleaning business schemas
+
+class BookingRequest(BaseModel):
+    """
+    Booking requests from customers
+    Collection name: "bookingrequest"
+    """
+    name: str = Field(..., description="Customer full name")
+    email: EmailStr = Field(..., description="Customer email")
+    phone: str = Field(..., description="Contact phone number")
+    address: str = Field(..., description="Service address")
+    service_type: Literal[
+        "Standard Cleaning",
+        "Deep Cleaning",
+        "Move In/Out",
+        "Office Cleaning",
+        "Post-Construction"
+    ] = Field(..., description="Type of cleaning service requested")
+    preferred_date: str = Field(..., description="Preferred service date (YYYY-MM-DD)")
+    preferred_time: Optional[str] = Field(None, description="Preferred time window")
+    bedrooms: Optional[int] = Field(None, ge=0, description="Number of bedrooms")
+    bathrooms: Optional[int] = Field(None, ge=0, description="Number of bathrooms")
+    notes: Optional[str] = Field(None, description="Additional notes or instructions")
+    status: Literal["new", "reviewed", "scheduled", "completed", "cancelled"] = Field("new", description="Internal status")
 
 # Add your own schemas here:
 # --------------------------------------------------
